@@ -1,0 +1,9 @@
+App(
+    appid="ble_spam_pro",
+    name="BLE Spam Pro",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point=ble_spam_pro_app,
+    stack_size=2048,
+    sources=["ble_spam_pro.c"],
+    fap_category="Tools"
+)
