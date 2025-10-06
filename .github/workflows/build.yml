@@ -1,0 +1,37 @@
+name: Build BLE Spam Pro
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Build with Docker
+      run: |
+        # Клонируем прошивку
+        git clone --recursive https://github.com/flipperdevices/flipperzero-firmware.git
+        cd flipperzero-firmware
+        
+        # Копируем наше приложение
+        mkdir -p applications_user
+        cp -r ../ble_spam_pro applications_user/
+        
+        echo "=== Files structure ==="
+        ls -la applications_user/ble_spam_pro/
+        echo "=== File contents ==="
+        cat applications_user/ble_spam_pro/ble_spam_pro.c | head -20
+        
+        # Компилируем приложение
+        ./fbt fap_ble_spam_pro
+        
+        echo "=== Build results ==="
+        find . -name "ble_spam_pro.fap" -type f
+        
+    - name: Upload FAP
+      uses: actions/upload-artifact@v4
+      with:
+        name: ble-spam-pro
+        path: flipperzero-firmware/build/f7-firmware-D/.extapps/ble_spam_pro.fap
